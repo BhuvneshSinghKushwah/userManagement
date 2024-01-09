@@ -26,7 +26,7 @@ exports.getUserDetails = async (req, res) => {
 
 // Function to update user details
 exports.updateUserDetails = async (req, res) => {
-  const { name, userImage } = req.body;
+  const { email, phone, name, userImage } = req.body;
 
   try {
     const userIdentifier = req.params.id; // Get user ID from request params
@@ -44,6 +44,8 @@ exports.updateUserDetails = async (req, res) => {
     }
 
     // Update user details (name and userImage)
+    user.email = email || user.email;
+    user.phone = phone || user.phone;
     user.name = name || user.name; // Update name if provided, else keep the existing name
     user.userImage = userImage || user.userImage; // Update userImage if provided, else keep the existing userImage
 

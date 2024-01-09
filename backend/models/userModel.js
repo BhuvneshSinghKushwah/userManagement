@@ -4,18 +4,40 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
-        sparse: true, // Allows null or empty strings as unique fields
-        required: function() {
-            return !this.phone; // Email is required if phone is not provided
-        }
+        sparse: true,
+        validate: [
+            {
+                validator: function(value) {
+                    return !this.phone && !this.email ? this.isNew && !(!value || value.trim().length === 0) : true;
+                },
+                message: 'Email or Phone number is required'
+            },
+            {
+                validator: function(value) {
+                    return !value || /^\S+@\S+\.\S+$/.test(value); // Basic email format validation
+                },
+                message: 'Invalid email format'
+            }
+        ]
     },
     phone: {
         type: String,
         unique: true,
-        sparse: true, // Allows null or empty strings as unique fields
-        required: function() {
-            return !this.email; // Phone is required if email is not provided
-        }
+        sparse: true,
+        validate: [
+            {
+                validator: function(value) {
+                    return !this.email && !this.phone ? this.isNew && !(!value || value.trim().length === 0) : true;
+                },
+                message: 'Email or Phone number is required'
+            },
+            {
+                validator: function(value) {
+                    return !value || /^\d{10}$/.test(value); // Basic phone number format validation
+                },
+                message: 'Invalid phone number format'
+            }
+        ]
     },
     name: {
         type: String,
@@ -25,8 +47,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    userPicture: {
-        type: String // You can use a String to store image URLs or Buffer for image data
+    userImage: {
+        type: Buffer
     },
     role: {
         type: String,
@@ -37,3 +59,4 @@ const userSchema = new mongoose.Schema({
 
 const UserModel = mongoose.model('User', userSchema);
 module.exports = UserModel;
+    

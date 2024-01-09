@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -14,6 +15,15 @@ const authRouter = require('./routes/authRoutes.js');
 const userRouter = require('./routes/userRoutes.js');
 
 app.use(express.json());
+const corsOptions = {
+    origin: 'http://localhost:3000', // Allow only requests from this origin
+    methods: 'GET,POST,PUT,DELETE',
+    credentials: true, // Enable credentials (cookies, authorization headers)
+    optionsSuccessStatus: 200 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
+  
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
